@@ -25,3 +25,6 @@ Fluxo automatizado desenvolvido no **n8n** que realiza a triagem de currículos 
 2. No n8n, clique em "Import Workflow"  
 3. Cole o conteúdo do arquivo ou faça upload  
 4. Atualize as credenciais das integrações (Gmail, Sheets, OpenAI)
+
+5. ![Fluxo no n8n](docs/Triagem%20de%20currículos%20-%20n8n.png)
+
