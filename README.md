@@ -3,6 +3,7 @@
 Fluxo automatizado desenvolvido no **n8n** para triagem de currículos recebidos por e-mail.  
 A automação analisa o conteúdo dos PDFs, compara com as vagas em planilha e envia respostas automáticas ao RH com auxílio de **IA (OpenAI)**.
 
+![Fluxo n8n](docs/Triagem%20de%20curr%C3%ADculos%20-%20n8n.png)
 ---
 
 ## 🧩 Funcionalidades
@@ -35,6 +36,4 @@ A automação analisa o conteúdo dos PDFs, compara com as vagas em planilha e e
 Desenvolvido por **Daiane Mendes**  
 💼 Estagiária de Automação e IA  
 🔗 [LinkedIn](https://linkedin.com/in/daiane-mendes-848252289) | [GitHub](https://github.com/daianesmendes)
-
-![Fluxo n8n](docs/Triagem%20de%20curr%C3%ADculos%20-%20n8n.png)
 
