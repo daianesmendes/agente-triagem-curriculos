@@ -5,8 +5,6 @@ A automação analisa o conteúdo dos PDFs, compara com as vagas em planilha e e
 
 ---
 
-![Fluxo n8n](docs/Triagem de currículos - n8n.png)
-
 ## 🧩 Funcionalidades
 - **📨 Gmail Trigger:** detecta novos currículos recebidos.  
 - **📄 Extract from PDF:** extrai e processa o texto do currículo.  
@@ -37,3 +35,6 @@ A automação analisa o conteúdo dos PDFs, compara com as vagas em planilha e e
 Desenvolvido por **Daiane Mendes**  
 💼 Estagiária de Automação e IA  
 🔗 [LinkedIn](https://linkedin.com/in/daiane-mendes-848252289) | [GitHub](https://github.com/daianesmendes)
+
+![Fluxo n8n](docs/Triagem_de_Curriculos_n8n.png)
+
