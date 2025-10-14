@@ -1,0 +1,12 @@
+# Arquivos sensíveis
+.env
+credentials.json
+
+# Dependências e caches
+node_modules/
+*.bak
+*.log
+
+# Arquivos de sistema
+.DS_Store
+Thumbs.db

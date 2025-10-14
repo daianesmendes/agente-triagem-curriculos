@@ -1,0 +1,437 @@
+{
+  "name": "Agente de triagem de currículos",
+  "nodes": [
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "simple": false,
+        "filters": {
+          "q": "subject:Currículo"
+        },
+        "options": {
+          "downloadAttachments": true
+        }
+      },
+      "type": "n8n-nodes-base.gmailTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        -64,
+        0
+      ],
+      "id": "f1d57a21-6cf0-4861-8423-4d465eaf0a6a",
+      "name": "Gmail Trigger",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "5TQoWyqhHw45WTLG",
+          "name": "Gmail account Daiane"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "pdf",
+        "binaryPropertyName": "attachment_0",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [
+        160,
+        0
+      ],
+      "id": "42dfa28d-0bcd-42b4-883b-e876e73cf456",
+      "name": "Leitura do currículo"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "c665b663-a3d1-4587-85e7-b5c7b9756666",
+              "name": "candidate_email",
+              "value": "={{ $('Gmail Trigger').item.json.from.value[0].address }}",
+              "type": "string"
+            },
+            {
+              "id": "babbb9fa-06b3-4a8a-a4f0-8e2974783a04",
+              "name": "resume_text",
+              "value": "={{ $json.text }}",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        480,
+        -144
+      ],
+      "id": "5c435f52-0f71-498c-b141-a5a2dac94986",
+      "name": "Organizar dados do currículo"
+    },
+    {
+      "parameters": {
+        "documentId": {
+          "__rl": true,
+          "value": "SUA_PLANILHA_ID_AQUI",
+          "mode": "list",
+          "cachedResultName": "Vagas 01tecnologia",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1J-800KvObcln9qWVs2UGotMR0uRC4-jaHN8g0jkeyoc/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "Sheet1",
+          "mode": "name"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.7,
+      "position": [
+        480,
+        144
+      ],
+      "id": "fa4fec79-769b-4253-9069-57d721d90a2c",
+      "name": "Get row(s) in sheet",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "rWvJF7mRp0GEP4p7",
+          "name": "Google Sheets account 7"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=",
+        "options": {
+          "systemMessage": "=Você é um avaliador de recrutamento técnico da empresa Obra Prima.\nSua função é analisar o currículo de um candidato e compará-lo com o perfil da vaga abaixo, que pode variar conforme os dados recebidos da planilha.\n\n🎯 Objetivo\n\nDevolva uma avaliação completa e estruturada, contendo:\n\nPercentual de compatibilidade com a vaga (0 a 100%)\n\nPontos fortes (2 a 4 itens)\n\nPontos fracos (2 a 4 itens)\n\nRecomendação final (Ex: “Altamente indicado”, “Indicado para entrevista”, “Não indicado”)\n\n⚠️ Importante: Sempre inicie a resposta citando o nome da vaga analisada.\n\n📋 Como analisar\n\nSeja criterioso e objetivo.\nO candidato deve estar apto para atuar na função descrita, considerando suas experiências, habilidades e formação.\nUse julgamento humano e inferência textual para comparar o currículo com as responsabilidades e requisitos da vaga.\n\nDê mais peso para experiência prática, resultados concretos e aderência às competências técnicas e comportamentais.\n\n🧩 Estrutura da resposta\n\nResponda exatamente neste formato:\n\n📌 Vaga avaliada: [Nome exato da vaga]\n\n📊 Percentual de compatibilidade: XX%\n\n✅ Pontos fortes:\n\n[item 1]\n\n[item 2]\n\n[item 3]\n\n⚠️ Pontos fracos:\n\n[item 1]\n\n[item 2]\n\n[item 3]\n\n🧭 Recomendação final:\n[Explique em 2 a 3 linhas se o candidato deve seguir para entrevista, ou não, e por quê]\n\n💾 Dados fornecidos pelo sistema\n\nCurrículo do candidato:\n{{ $json.resume_text }}\n\nVaga:\n{{ $json.vaga }}\n\nResponsabilidades:\n{{ $json.responsabilidades }}\n\nRequisitos:\n{{ $json.requisitos }}\n\n💬 Instruções adicionais\n\nResponda somente no formato solicitado, sem comentários fora da estrutura.\n\nCaso o currículo seja genérico, superficial ou sem relação com a vaga, reduza o percentual de compatibilidade.\n\nEvite repetir trechos do currículo; faça análise e síntese, com linguagem profissional e clara.\n\n💡 Exemplo de saída esperada\n\n📌 Vaga avaliada: Inside Sales\n\n📊 Percentual de compatibilidade: 82%\n\n✅ Pontos fortes:\n\nExperiência comprovada em vendas consultivas B2B\n\nBoa comunicação e postura consultiva\n\nExperiência com CRM e follow-ups estruturados\n\n⚠️ Pontos fracos:\n\nNão menciona uso do Pipedrive\n\nPouca relação com o setor de construção civil\n\n🧭 Recomendação final:\nIndicado para entrevista. O candidato demonstra perfil compatível com Inside Sales e experiência sólida em vendas SaaS, com potencial de rápida adaptação ao segmento da Obra Prima."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        992,
+        0
+      ],
+      "id": "479f03eb-f653-4256-b550-ec0fb37ad81c",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4.1-mini"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        992,
+        192
+      ],
+      "id": "c2763b01-6175-4465-965d-347a75e1ef73",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "x1vJgRPyMNjUHL92",
+          "name": "OpenAi 2 - Daiane"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineAll",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        768,
+        0
+      ],
+      "id": "6571d7fc-b1fe-43ed-b003-4780cfdfa1ae",
+      "name": "Merge"
+    },
+    {
+      "parameters": {
+        "sendTo": "daiane.mendes@01tec.com.br",
+        "subject": "=Análise de Currículo – {{ $json[\"output\"].match(/Vaga avaliada:\\s*([^\\n]+)/)?.[1] || \"Vaga não identificada\" }}",
+        "message": "=<p>Olá, equipe de RH,</p>\n\n<p>Segue abaixo a análise automática do currículo recebido:</p>\n\n<hr>\n\n<p><b>{{ $json[\"output\"].match(/Vaga avaliada:\\s*([^\\n]+)/)?.[1] || \"Vaga não identificada\" }}</b></p>\n\n<pre style=\"font-family: Arial; white-space: pre-wrap;\">\n{{ $json[\"output\"] }}\n</pre>\n\n<p>Atenciosamente,<br>\n<b>Sistema de Triagem Automática – Obra Prima</b></p>\n",
+        "options": {
+          "attachmentsUi": {
+            "attachmentsBinary": [
+              {
+                "property": "attachment_0"
+              }
+            ]
+          }
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        2144,
+        -208
+      ],
+      "id": "a757d699-eb62-40d5-be40-52b8dc0c5094",
+      "name": "Send a message",
+      "webhookId": "1f84a192-aad1-4fbb-ae66-96d9caa9dcba",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "5TQoWyqhHw45WTLG",
+          "name": "Gmail account Daiane"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\n\nconst parsed = items.map(i => {\n  const output = i.json.output || '';\n  const match = output.match(/(\\d+)%/); \n  const percent = match ? parseInt(match[1]) : 0;\n  return { ...i.json, compatibility: percent };\n});\n\nparsed.sort((a, b) => b.compatibility - a.compatibility);\n\nconst best = parsed[0];\n\nreturn [{ json: best }];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1344,
+        0
+      ],
+      "id": "d0a652a0-9a68-47ed-b14f-a51e8fe78e86",
+      "name": "vaga mais compatível"
+    },
+    {
+      "parameters": {
+        "mode": "combine",
+        "combineBy": "combineByPosition",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        1584,
+        -16
+      ],
+      "id": "17e8273e-5feb-447e-8905-fbd106bf018e",
+      "name": "Merge1"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 2
+          },
+          "conditions": [
+            {
+              "id": "beca3109-be25-4954-85ea-277219816509",
+              "leftValue": "={{ $json.compatibility }}",
+              "rightValue": 60,
+              "operator": {
+                "type": "number",
+                "operation": "gt"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.2,
+      "position": [
+        1792,
+        -16
+      ],
+      "id": "144d0547-d5c4-435a-a6e4-2ce5856f49dc",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "sendTo": "rh@empresa.com",
+        "subject": "=Análise de Currículo – Sem vaga compatível",
+        "message": "=<p>Olá, equipe de RH,</p>\n\n<p>Segue abaixo o parecer da análise automática do currículo recebido.</p>\n\n<p>Após a triagem, não foram identificadas vagas que se enquadrem no perfil do candidato neste momento.</p>\n\n<p>Recomendamos manter o currículo arquivado para futuras oportunidades que estejam alinhadas às qualificações apresentadas.</p>\n\n<p>Atenciosamente,<br>\n<b>Sistema de Triagem Automática – Obra Prima</b></p>",
+        "options": {
+          "attachmentsUi": {
+            "attachmentsBinary": [
+              {
+                "property": "attachment_0"
+              }
+            ]
+          }
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.1,
+      "position": [
+        2144,
+        176
+      ],
+      "id": "c24f86a8-5ebd-4ce0-abf1-d2a9fe403c84",
+      "name": "Send a message1",
+      "webhookId": "1f84a192-aad1-4fbb-ae66-96d9caa9dcba",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "5TQoWyqhHw45WTLG",
+          "name": "Gmail account Daiane"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Gmail Trigger": {
+      "main": [
+        [
+          {
+            "node": "Leitura do currículo",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Leitura do currículo": {
+      "main": [
+        [
+          {
+            "node": "Organizar dados do currículo",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Get row(s) in sheet",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Organizar dados do currículo": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get row(s) in sheet": {
+      "main": [
+        [
+          {
+            "node": "Merge",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Merge": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "vaga mais compatível",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "vaga mais compatível": {
+      "main": [
+        [
+          {
+            "node": "Merge1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send a message": {
+      "main": [
+        []
+      ]
+    },
+    "Merge1": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Send a message",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send a message1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "94564ba3-7b1d-4222-94dc-28f1b1166dfb",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "333f7fdede98953d71017ef2e0ac27e5543ae79f7724abd686718654a6707bfd"
+  },
+  "id": "b1Hyj44IYs9SiDhF",
+  "tags": []
+}
