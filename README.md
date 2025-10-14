@@ -36,5 +36,5 @@ Desenvolvido por **Daiane Mendes**
 💼 Estagiária de Automação e IA  
 🔗 [LinkedIn](https://linkedin.com/in/daiane-mendes-848252289) | [GitHub](https://github.com/daianesmendes)
 
-![Fluxo n8n](docs/Triagem_de_Curriculos_n8n.png)
+![Fluxo n8n](docs/Triagem%20de%20curr%C3%ADculos%20-%20n8n.png)
 
